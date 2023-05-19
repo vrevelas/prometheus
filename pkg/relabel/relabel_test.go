@@ -447,7 +447,7 @@ func TestRelabel(t *testing.T) {
 			}
 		}
 
-		res := Process(test.input, test.relabel...)
+		res := Process(false, test.input, test.relabel...)
 		require.Equal(t, test.output, res)
 	}
 }

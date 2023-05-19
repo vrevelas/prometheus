@@ -649,7 +649,7 @@ func mutateSampleLabels(lset labels.Labels, target *Target, honor bool, rc []*re
 	res := lb.Labels()
 
 	if len(rc) > 0 {
-		res = relabel.Process(res, rc...)
+		res = relabel.Process(false, res, rc...)
 	}
 
 	return res

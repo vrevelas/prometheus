@@ -180,9 +180,12 @@ func (re Regexp) MarshalYAML() (interface{}, error) {
 // are applied in order of input.
 // If a label set is dropped, nil is returned.
 // May return the input labelSet modified.
-func Process(labels labels.Labels, cfgs ...*Config) labels.Labels {
+func Process(debug bool, labels labels.Labels, cfgs ...*Config) labels.Labels {
 	for _, cfg := range cfgs {
-		labels = relabel(labels, cfg)
+		if debug {
+			fmt.Printf("debug config %+v\n", cfg)
+		}
+		labels = relabel(labels, cfg, debug)
 		if labels == nil {
 			return nil
 		}
@@ -190,7 +193,7 @@ func Process(labels labels.Labels, cfgs ...*Config) labels.Labels {
 	return labels
 }
 
-func relabel(lset labels.Labels, cfg *Config) labels.Labels {
+func relabel(lset labels.Labels, cfg *Config, debug bool) labels.Labels {
 	values := make([]string, 0, len(cfg.SourceLabels))
 	for _, ln := range cfg.SourceLabels {
 		values = append(values, lset.Get(string(ln)))
@@ -206,6 +209,9 @@ func relabel(lset labels.Labels, cfg *Config) labels.Labels {
 		}
 	case Keep:
 		if !cfg.Regex.MatchString(val) {
+			if debug {
+				fmt.Printf("label %s didn't match regex %s\n", val, cfg.Regex.String())
+			}
 			return nil
 		}
 	case Replace:

@@ -389,7 +389,7 @@ func (n *Manager) relabelAlerts(alerts []*Alert) []*Alert {
 	var relabeledAlerts []*Alert
 
 	for _, alert := range alerts {
-		labels := relabel.Process(alert.Labels, n.opts.RelabelConfigs...)
+		labels := relabel.Process(false, alert.Labels, n.opts.RelabelConfigs...)
 		if labels != nil {
 			alert.Labels = labels
 			relabeledAlerts = append(relabeledAlerts, alert)
@@ -714,7 +714,7 @@ func alertmanagerFromGroup(tg *targetgroup.Group, cfg *config.AlertmanagerConfig
 			}
 		}
 
-		lset := relabel.Process(labels.New(lbls...), cfg.RelabelConfigs...)
+		lset := relabel.Process(false, labels.New(lbls...), cfg.RelabelConfigs...)
 		if lset == nil {
 			droppedAlertManagers = append(droppedAlertManagers, alertmanagerLabels{lbls})
 			continue

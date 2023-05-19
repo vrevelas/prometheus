@@ -641,7 +641,7 @@ func (t *QueueManager) StoreSeries(series []record.RefSeries, index int) {
 		t.seriesSegmentIndexes[s.Ref] = index
 
 		ls := processExternalLabels(s.Labels, t.externalLabels)
-		lbls := relabel.Process(ls, t.relabelConfigs...)
+		lbls := relabel.Process(true, ls, t.relabelConfigs...)
 		if len(lbls) == 0 {
 			t.droppedSeries[s.Ref] = struct{}{}
 			continue
